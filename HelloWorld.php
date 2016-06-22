@@ -11,6 +11,12 @@ class HelloWorld
     {
         $this->pdo = $pdo;
     }
+    
+    public function createDBIFNotExists() {
+        $sql = "CREATE TABLE IF NOT EXISTS hello;";
+        $this->pdo->query($sql);
+        return true;
+    }
 
     public function hello($what = 'World')
     {
