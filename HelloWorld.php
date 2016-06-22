@@ -17,6 +17,7 @@ class HelloWorld
         $this->pdo->query($sql);
         return true;
     }
+    
 
     public function hello($what = 'World')
     {
