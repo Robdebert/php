@@ -50,6 +50,11 @@ class HelloWorldTest extends PHPUnit_Framework_TestCase
 		$result = $this->helloWorld->insert("1. Versuch - ".date("d.m.Y H:i:s"));
 		$this->assertTrue($result);
     }
+    public function testInsertFalse()
+    {
+		$result = $this->helloWorld->insert();
+		$this->assertFalse($result);
+    }
 
 	
     public function testHello()
