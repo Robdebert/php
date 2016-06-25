@@ -28,7 +28,7 @@ class HelloWorld
         $sql = "INSERT INTO world VALUES ('{$message}')";
 		$sth = $this->pdo->prepare($sql);
         $result = $sth->execute();
-        return (bool) $result;
+        return (bool) $results;
     }
 
 
@@ -38,6 +38,6 @@ class HelloWorld
         $sth = $this->pdo->prepare($sql);
 		$sth->execute();
 		$result_array = $sth->fetchAll(PDO::FETCH_ASSOC);
-        return $result_array;
+        return $result_arrays;
     }
 }
