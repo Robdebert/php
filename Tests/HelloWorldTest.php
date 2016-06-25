@@ -1,47 +1,71 @@
 <?php
 
+
 class HelloWorldTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @var PDO
      */
-    private $pdo;
+    public $pdo = null;
 
-    public function setUp()
+    public function __construct()
     {
-        $this->pdo = new PDO($GLOBALS['db_dsn'], $GLOBALS['db_username'], $GLOBALS['db_password']);
-        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $this->pdo->query("CREATE TABLE hello (what VARCHAR(50) NOT NULL)");
+        $this->pdo = new PDO("mysql:host=localhost;dbname=hello", "root", "", array(
+			PDO::ATTR_PERSISTENT => true
+		));
+
+		$currentDir = __DIR__;
+		$baseDir = str_replace("\Tests", "", $currentDir);
+		$file = $baseDir."\HelloWorld.php";
+		
+		include_once($file);
     }
 
+    public function setup() {
+		
+		$this->helloWorld = new HelloWorld($this->pdo);
+		
+	}
+	
     public function tearDown()
     {
-        $this->pdo->query("DROP TABLE hello");
+        unset($this->helloWorld);
     }
+	
 
-    public function testHelloWorld()
+    public function testDBCreate() {
+		$result = $this->helloWorld->createDBIFNotExists();
+		$this->assertTrue($result, true);
+	}
+	
+    public function testTableCreate() {
+		$result = $this->helloWorld->createTableIFNotExists();
+		$this->assertTrue($result, true);
+	}
+	
+	
+	
+    public function testInsert()
     {
-        $helloWorld = new HelloWorld($this->pdo);
-
-        $this->assertEquals('Hello World', $helloWorld->hello());
+		$result = $this->helloWorld->insert("1. Versuch - ".date("d.m.Y H:i:s"));
+		$this->assertTrue($result);
     }
 
+	
     public function testHello()
     {
-        $helloWorld = new HelloWorld($this->pdo);
-
-        $this->assertEquals('Hello Bar', $helloWorld->hello('Bar'));
+        $results = $this->helloWorld->getAll();
+		$this->assertTrue(is_array($results), true); // https://phpunit.de/manual/current/en/appendixes.assertions.html
     }
+	
 
     public function testWhat()
     {
-        $helloWorld = new HelloWorld($this->pdo);
 
-        $this->assertFalse($helloWorld->what());
+        $result = $this->helloWorld->insert("2. Versuch - ".date("d.m.Y H:i:s"));
+        $this->assertTrue($result);
 
-        $helloWorld->hello('Bar');
-
-        $this->assertEquals('Bar', $helloWorld->what());
+        // $this->assertEquals('Bar', $this->helloWorld->getAll());
     }
 }
 
